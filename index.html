@@ -1,4 +1,3 @@
-<!-- ===================== index.html ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,39 +5,451 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Mission: Pop Them All 🎈</title>
 <style>
-body{margin:0;overflow:hidden;font-family:sans-serif;background:black;color:white}
-h1{position:absolute;top:10px;width:100%;text-align:center}
-.balloon{width:80px;height:100px;border-radius:50%;position:absolute;cursor:pointer;animation:float 5s infinite ease-in-out}
-@keyframes float{50%{transform:translateY(-40px)}}
-#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:black;display:flex;justify-content:center;align-items:center;font-size:30px;z-index:10}
+  :root{
+    --bg1:#120018;
+    --bg2:#2a003f;
+    --pink:#ff4d8d;
+    --white:#fff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    overflow:hidden;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--white);
+    background:radial-gradient(circle at top, #3a0058 0%, var(--bg2) 35%, var(--bg1) 100%);
+    min-height:100vh;
+  }
+  #stars, #sparkles{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .star, .sparkle{
+    position:absolute;
+    border-radius:50%;
+    opacity:.8;
+    animation:twinkle 2.8s infinite ease-in-out;
+  }
+  .star{
+    width:3px;height:3px;background:#fff;
+    box-shadow:0 0 8px rgba(255,255,255,.9);
+  }
+  .sparkle{
+    width:6px;height:6px;background:rgba(255,255,255,.9);
+    box-shadow:0 0 14px rgba(255,255,255,.9);
+    animation-duration:1.2s;
+  }
+  @keyframes twinkle{
+    0%,100%{transform:scale(.7);opacity:.4}
+    50%{transform:scale(1.5);opacity:1}
+  }
+  .moon{
+    position:absolute;
+    top:40px; right:40px;
+    width:86px;height:86px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #fff 0%, #f8f0ff 35%, #d9b3ff 100%);
+    box-shadow:0 0 30px rgba(255,255,255,.45);
+    opacity:.95;
+  }
+  .moon::after{
+    content:"";
+    position:absolute; inset:14px 18px 10px 18px;
+    border-radius:50%;
+    background:rgba(255,255,255,.12);
+    filter:blur(1px);
+  }
+  .cloud{
+    position:absolute;
+    background:rgba(255,255,255,.10);
+    backdrop-filter:blur(2px);
+    border-radius:999px;
+    filter:blur(.2px);
+    animation:drift 26s linear infinite;
+  }
+  .cloud::before, .cloud::after{
+    content:"";
+    position:absolute;
+    background:inherit;
+    border-radius:50%;
+  }
+  .cloud::before{width:64px;height:64px;left:18px;top:-28px}
+  .cloud::after{width:80px;height:80px;left:56px;top:-36px}
+  @keyframes drift{
+    from{transform:translateX(-20vw)}
+    to{transform:translateX(120vw)}
+  }
+  .topbar{
+    position:relative;
+    z-index:5;
+    text-align:center;
+    padding:22px 16px 8px;
+  }
+  .title{
+    margin:0;
+    font-size:clamp(2rem,5vw,4rem);
+    letter-spacing:1px;
+    text-shadow:0 0 20px rgba(255,125,182,.45);
+  }
+  .subtitle{
+    margin:10px auto 0;
+    max-width:720px;
+    font-size:clamp(1rem,2vw,1.2rem);
+    color:#f4d9ff;
+    opacity:.95;
+  }
+  .hud{
+    position:relative;
+    z-index:5;
+    display:flex;
+    justify-content:center;
+    margin-top:18px;
+    padding:0 16px;
+  }
+  .card{
+    width:min(92vw,720px);
+    background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:0 18px 60px rgba(0,0,0,.35);
+    border-radius:24px;
+    padding:18px 18px 16px;
+    backdrop-filter:blur(8px);
+    text-align:center;
+  }
+  .count{
+    font-weight:700;
+    color:#ffd4ea;
+    margin-bottom:6px;
+  }
+  .progress{
+    width:100%;
+    height:12px;
+    background:rgba(255,255,255,.12);
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:12px;
+  }
+  .progress > span{
+    display:block;
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, #ffb3d1, #ff4d8d);
+    border-radius:999px;
+    transition:width .25s ease;
+    box-shadow:0 0 18px rgba(255,77,141,.55);
+  }
+  #overlay{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(5,0,10,.88);
+    text-align:center;
+    padding:24px;
+    backdrop-filter:blur(8px);
+  }
+  .overlay-box{
+    max-width:560px;
+    background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:28px;
+    padding:28px 24px;
+    box-shadow:0 20px 70px rgba(0,0,0,.45);
+  }
+  .overlay-box h2{
+    margin:0 0 10px;
+    font-size:clamp(1.6rem,4vw,2.4rem);
+  }
+  .overlay-box p{
+    margin:0 0 18px;
+    color:#f4d9ff;
+    line-height:1.5;
+  }
+  button{
+    appearance:none;
+    border:none;
+    border-radius:999px;
+    padding:14px 22px;
+    font-size:1rem;
+    font-weight:700;
+    cursor:pointer;
+    color:#240016;
+    background:linear-gradient(135deg, #ffd8e7, #ff7ab8);
+    box-shadow:0 12px 30px rgba(255,122,184,.35);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  button:hover{transform:translateY(-2px) scale(1.02)}
+  button:active{transform:translateY(1px) scale(.99)}
+  #playfield{
+    position:fixed;
+    inset:0;
+    z-index:2;
+  }
+  .balloon{
+    position:absolute;
+    width:76px;
+    height:94px;
+    border-radius:50% 50% 48% 48%;
+    box-shadow:inset -12px -18px 18px rgba(0,0,0,.18), 0 12px 18px rgba(0,0,0,.12);
+    cursor:pointer;
+    animation:float 4.8s ease-in-out infinite;
+    transform-origin:50% 110%;
+  }
+  .balloon::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-30px;
+    width:2px;
+    height:34px;
+    transform:translateX(-50%);
+    background:rgba(255,255,255,.8);
+  }
+  .balloon::after{
+    content:"";
+    position:absolute;
+    left:18px;
+    top:18px;
+    width:16px;
+    height:24px;
+    border-radius:50%;
+    background:rgba(255,255,255,.28);
+    transform:rotate(-20deg);
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0) rotate(-2deg)}
+    50%{transform:translateY(-34px) rotate(2deg)}
+  }
+  .pop{
+    animation:pop .18s ease forwards !important;
+  }
+  @keyframes pop{
+    to{transform:scale(0);opacity:0}
+  }
+  .string{
+    position:absolute;
+    width:2px;
+    height:40px;
+    background:rgba(255,255,255,.75);
+    left:50%;
+    top:92px;
+    transform:translateX(-50%);
+    border-radius:999px;
+  }
+  .hidden-next{
+    display:none;
+    margin-top:14px;
+  }
+  .toast{
+    margin-top:10px;
+    color:#ffe8f4;
+    font-size:.98rem;
+    opacity:.95;
+  }
+  .burst{
+    position:absolute;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    pointer-events:none;
+    background:#fff;
+    box-shadow:0 0 16px rgba(255,255,255,.9);
+    animation:burst .7s ease-out forwards;
+  }
+  @keyframes burst{
+    to{
+      transform:translate(var(--x), var(--y)) scale(0);
+      opacity:0;
+    }
+  }
+  .corner-note{
+    position:fixed;
+    right:18px;
+    bottom:14px;
+    z-index:6;
+    font-size:.82rem;
+    color:#efccff;
+    opacity:.8;
+  }
+  @media (max-width:520px){
+    .balloon{width:62px;height:78px}
+    .balloon::before{bottom:-28px;height:30px}
+  }
 </style>
 </head>
 <body>
-<div id="overlay">🎯 Pop ALL balloons to unlock reveal...</div>
-<h1>Stage 1</h1>
-<script>
-let colors=['#ff4d6d','#ff85a1','#f72585','#ff006e'];
-let total=15,count=0;
-let pop=new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+  <div id="stars"></div>
+  <div id="sparkles"></div>
+  <div class="moon"></div>
 
-setTimeout(()=>document.getElementById('overlay').style.display='none',2000);
+  <div class="cloud" style="top:110px; width:180px; height:56px; animation-duration:30s;"></div>
+  <div class="cloud" style="top:210px; width:240px; height:70px; animation-duration:38s; animation-delay:-8s;"></div>
+  <div class="cloud" style="top:320px; width:160px; height:52px; animation-duration:34s; animation-delay:-16s;"></div>
 
-for(let i=0;i<total;i++){
- let b=document.createElement('div');
- b.className='balloon';
- b.style.background=colors[Math.floor(Math.random()*colors.length)];
- b.style.left=Math.random()*95+'vw';
- b.style.top=Math.random()*90+'vh';
- b.onclick=()=>{
-  pop.currentTime=0; pop.play();
-  b.remove(); count++;
-  if(count===total){
-    document.body.innerHTML='<h1 style="margin-top:40vh">😏 Nice try... WRONG REVEAL!</h1><div style="text-align:center"><button onclick="location.href=\'page2.html\'">Next Stage →</button></div>';
-  }
- }
- document.body.appendChild(b);
-}
-</script>
+  <div id="overlay">
+    <div class="overlay-box">
+      <h2>🎯 Pop all balloons to know the gender</h2>
+      <p>Tap the balloons, enjoy the playful theme, and clear the sky. The answer is still hidden ahead.</p>
+      <button id="startBtn">Start Mission & Music</button>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <h1 class="title">Mission: Pop Them All 🎈</h1>
+    <p class="subtitle">A cheerful challenge to begin the reveal journey.</p>
+  </div>
+
+  <div class="hud">
+    <div class="card">
+      <div class="count" id="countText">Balloons popped: 0 / 15</div>
+      <div class="toast">Hint: some balloons are sneaky and keep floating.</div>
+      <div class="progress"><span id="bar"></span></div>
+      <button id="nextBtn" class="hidden-next" onclick="location.href='page2.html'">Go to the next page →</button>
+    </div>
+  </div>
+
+  <div id="playfield"></div>
+
+  <script>
+    const total = 15;
+    let popped = 0;
+    let started = false;
+    let cheerTimer = null;
+    const colors = ['#ff4d8d', '#ff8fb8', '#ff66aa', '#ffb3d9', '#ff5c9e'];
+
+    const playfield = document.getElementById('playfield');
+    const overlay = document.getElementById('overlay');
+    const countText = document.getElementById('countText');
+    const bar = document.getElementById('bar');
+    const nextBtn = document.getElementById('nextBtn');
+    const startBtn = document.getElementById('startBtn');
+
+    let audioCtx;
+
+    function initAudio(){
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function tone(freq, start, dur, type = 'triangle', gain = 0.035){
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + start);
+      g.gain.setValueAtTime(0.0001, audioCtx.currentTime + start);
+      g.gain.exponentialRampToValueAtTime(gain, audioCtx.currentTime + start + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + start + dur);
+      osc.connect(g).connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + start);
+      osc.stop(audioCtx.currentTime + start + dur + 0.02);
+    }
+
+    function startCheerfulTheme(){
+      stopTheme();
+      const melody = [523.25, 659.25, 783.99, 659.25, 587.33, 659.25, 698.46, 523.25];
+      let step = 0;
+      cheerTimer = setInterval(() => {
+        const f = melody[step % melody.length];
+        tone(f, 0, 0.16, 'triangle', 0.03);
+        tone(f * 2, 0.02, 0.09, 'sine', 0.013);
+        if (step % 4 === 0) tone(196, 0, 0.09, 'sine', 0.018);
+        step++;
+      }, 230);
+    }
+
+    function stopTheme(){
+      if (cheerTimer) clearInterval(cheerTimer);
+      cheerTimer = null;
+    }
+
+    function createStars(){
+      const frag = document.createDocumentFragment();
+      for(let i = 0; i < 80; i++){
+        const s = document.createElement('div');
+        s.className = i % 6 === 0 ? 'sparkle' : 'star';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.top = Math.random() * 100 + 'vh';
+        s.style.animationDelay = (Math.random() * 2.5) + 's';
+        s.style.opacity = (0.35 + Math.random() * 0.65).toFixed(2);
+        frag.appendChild(s);
+      }
+      document.getElementById('stars').appendChild(frag);
+    }
+
+    function burst(x, y){
+      for(let i = 0; i < 12; i++){
+        const p = document.createElement('div');
+        p.className = 'burst';
+        const dx = (Math.random() - 0.5) * 120 + 'px';
+        const dy = (Math.random() - 0.5) * 120 + 'px';
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.setProperty('--x', dx);
+        p.style.setProperty('--y', dy);
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        playfield.appendChild(p);
+        setTimeout(() => p.remove(), 700);
+      }
+    }
+
+    function updateProgress(){
+      countText.textContent = `Balloons popped: ${popped} / ${total}`;
+      bar.style.width = `${(popped / total) * 100}%`;
+      if (popped >= total) {
+        nextBtn.style.display = 'inline-block';
+        document.querySelector('.toast').textContent = 'Nice work. Go to the next page.';
+      }
+    }
+
+    function popBalloon(el){
+      const rect = el.getBoundingClientRect();
+      burst(rect.left + rect.width/2, rect.top + rect.height/2);
+      el.classList.add('pop');
+      tone(740, 0, 0.08, 'square', 0.02);
+      tone(980, 0.02, 0.12, 'triangle', 0.014);
+      setTimeout(() => el.remove(), 180);
+      popped++;
+      updateProgress();
+      if (popped === total) {
+        tone(523.25, 0, 0.16, 'triangle', 0.03);
+        tone(659.25, 0.13, 0.16, 'triangle', 0.03);
+      }
+    }
+
+    function createBalloon(i){
+      const b = document.createElement('div');
+      b.className = 'balloon';
+      b.style.background = `linear-gradient(180deg, ${colors[i % colors.length]}, #8f1d58)`;
+      b.style.left = (Math.random() * 86 + 6) + 'vw';
+      b.style.top = (Math.random() * 62 + 18) + 'vh';
+      b.style.animationDelay = (Math.random() * 2) + 's';
+      b.style.animationDuration = (3.8 + Math.random() * 2) + 's';
+      b.innerHTML = `<div class="string"></div>`;
+      b.addEventListener('click', () => popBalloon(b));
+      playfield.appendChild(b);
+    }
+
+    function startMission(){
+      if (started) return;
+      started = true;
+      overlay.style.display = 'none';
+      initAudio();
+      startCheerfulTheme();
+      for(let i = 0; i < total; i++) createBalloon(i);
+    }
+
+    startBtn.addEventListener('click', startMission);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') startMission();
+    });
+
+    createStars();
+  </script>
+
+  <div class="corner-note">Stage 1: playful, bright, and a little suspicious.</div>
 </body>
 </html>
-
