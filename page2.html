@@ -1,0 +1,36 @@
+
+<!-- ===================== page2.html ===================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Final Challenge 🎁</title>
+<style>
+body{margin:0;background:#111;color:white;font-family:sans-serif;text-align:center}
+#box{width:200px;height:200px;background:#ff4d6d;margin:150px auto;border-radius:15px;cursor:pointer;transition:0.5s}
+#msg{display:none;font-size:28px}
+button{display:none;padding:12px 25px;font-size:18px}
+</style>
+</head>
+<body>
+<h1>Stage 2</h1>
+<div id="box"></div>
+<div id="msg">😂 STILL WRONG!!<br>Okay okay... next one is real (maybe)</div>
+<button onclick="location.href='final.html'">FINAL STAGE →</button>
+
+<script>
+let drum=new Audio('https://www.soundjay.com/misc/sounds/drum-roll-1.mp3');
+
+document.getElementById('box').onclick=function(){
+ drum.play();
+ this.style.transform='scale(1.4) rotate(20deg)';
+ setTimeout(()=>{
+  document.getElementById('msg').style.display='block';
+  document.querySelector('button').style.display='inline-block';
+ },2500);
+}
+</script>
+</body>
+</html>
+

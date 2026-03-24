@@ -1,0 +1,67 @@
+
+<!-- ===================== final.html ===================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>THE REVEAL 🎉</title>
+<style>
+body{margin:0;background:black;overflow:hidden;color:white;font-family:sans-serif}
+h1{position:absolute;top:40%;width:100%;text-align:center;font-size:70px;opacity:0;transition:2s}
+canvas{position:fixed;top:0;left:0}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<h1 id="text">💙 IT'S A BOY!!! 💙</h1>
+<script>
+let canvas=document.getElementById('c');
+let ctx=canvas.getContext('2d');
+canvas.width=innerWidth; canvas.height=innerHeight;
+
+let fireworks=[];
+function createFirework(){
+ return {x:Math.random()*canvas.width,y:canvas.height,vy:-8,explodeY:Math.random()*canvas.height/2,color:'hsl('+Math.random()*360+',100%,50%)',particles:[]}
+}
+
+function explode(f){
+ for(let i=0;i<50;i++){
+  f.particles.push({x:f.x,y:f.y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:60})
+ }
+}
+
+function draw(){
+ ctx.fillStyle='rgba(0,0,0,0.2)';
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ if(Math.random()<0.05) fireworks.push(createFirework());
+
+ fireworks.forEach((f,i)=>{
+  if(!f.exploded){
+    f.y+=f.vy;
+    if(f.y<=f.explodeY){f.exploded=true; explode(f)}
+    ctx.fillStyle=f.color;
+    ctx.fillRect(f.x,f.y,3,10);
+  }else{
+    f.particles.forEach(p=>{
+      ctx.fillStyle=f.color;
+      ctx.fillRect(p.x,p.y,3,3);
+      p.x+=p.vx; p.y+=p.vy; p.life--;
+    });
+  }
+ });
+ requestAnimationFrame(draw);
+}
+
+let audio=new Audio('https://www.soundjay.com/human/sounds/applause-8.mp3');
+
+setTimeout(()=>{
+ document.getElementById('text').style.opacity=1;
+ audio.play();
+},2000);
+
+draw();
+</script>
+</body>
+</html>
