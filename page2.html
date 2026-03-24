@@ -1,36 +1,318 @@
-
-<!-- ===================== page2.html ===================== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Final Challenge 🎁</title>
+<title>Gender Reveal Page</title>
 <style>
-body{margin:0;background:#111;color:white;font-family:sans-serif;text-align:center}
-#box{width:200px;height:200px;background:#ff4d6d;margin:150px auto;border-radius:15px;cursor:pointer;transition:0.5s}
-#msg{display:none;font-size:28px}
-button{display:none;padding:12px 25px;font-size:18px}
+  :root{
+    --bg1:#0f1018;
+    --bg2:#1b1030;
+    --gold:#ffd166;
+    --pink:#ff5f87;
+    --text:#f8f5ff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    overflow:hidden;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--text);
+    background:radial-gradient(circle at top, #30174f 0%, var(--bg2) 35%, var(--bg1) 100%);
+  }
+  #ambient{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .question{
+    position:absolute;
+    color:rgba(255,255,255,.14);
+    font-weight:900;
+    font-size:clamp(1.6rem,4vw,4rem);
+    animation:floatQ 7s linear infinite;
+    user-select:none;
+  }
+  @keyframes floatQ{
+    from{transform:translateY(110vh) rotate(0deg)}
+    to{transform:translateY(-20vh) rotate(360deg)}
+  }
+  .gridGlow{
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size:42px 42px;
+    mask-image:linear-gradient(to bottom, rgba(0,0,0,.9), transparent 85%);
+    opacity:.25;
+  }
+  .header{
+    position:relative;
+    z-index:5;
+    text-align:center;
+    padding:28px 16px 10px;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(2rem,5vw,4rem);
+    text-shadow:0 0 24px rgba(255,209,102,.35);
+  }
+  .subtitle{
+    margin:10px auto 0;
+    max-width:760px;
+    color:#eadcff;
+    line-height:1.5;
+    opacity:.95;
+  }
+  .stage{
+    position:relative;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:calc(100vh - 130px);
+    padding:20px;
+  }
+  .panel{
+    width:min(92vw,760px);
+    border-radius:28px;
+    background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:0 20px 70px rgba(0,0,0,.38);
+    backdrop-filter:blur(10px);
+    padding:24px 20px 28px;
+    text-align:center;
+  }
+  .giftWrap{
+    width:220px;
+    height:220px;
+    margin:8px auto 18px;
+    position:relative;
+    cursor:pointer;
+    transform-style:preserve-3d;
+    transition:transform .25s ease;
+  }
+  .giftWrap:hover{transform:scale(1.03)}
+  .lid{
+    position:absolute;
+    top:0; left:20px;
+    width:180px; height:52px;
+    border-radius:18px 18px 12px 12px;
+    background:linear-gradient(180deg, #ff89ad, #ff4f7f);
+    box-shadow:inset 0 -10px 0 rgba(0,0,0,.1), 0 14px 24px rgba(0,0,0,.18);
+    z-index:3;
+    transform-origin:center bottom;
+  }
+  .box{
+    position:absolute;
+    top:46px; left:26px;
+    width:168px; height:168px;
+    border-radius:18px;
+    background:linear-gradient(180deg, #ff668e, #d81d58);
+    box-shadow:inset 0 -16px 0 rgba(0,0,0,.12), 0 18px 30px rgba(0,0,0,.22);
+  }
+  .ribbon-v,.ribbon-h{
+    position:absolute;
+    background:linear-gradient(180deg, #fff3b0, #ffd166);
+    z-index:4;
+    box-shadow:0 0 12px rgba(255,209,102,.25);
+  }
+  .ribbon-v{top:0;left:99px;width:18px;height:220px;transform:translateX(-50%)}
+  .ribbon-h{top:116px;left:20px;width:180px;height:18px;transform:translateY(-50%)}
+  .bow{
+    position:absolute;
+    top:-8px; left:50%;
+    width:72px; height:50px;
+    transform:translateX(-50%);
+    z-index:5;
+  }
+  .bow::before,.bow::after{
+    content:"";
+    position:absolute;
+    top:7px;
+    width:28px; height:20px;
+    border-radius:60% 40% 45% 55%;
+    background:linear-gradient(180deg, #ffe9a6, #ffd166);
+    box-shadow:0 0 12px rgba(255,209,102,.22);
+  }
+  .bow::before{left:3px; transform:rotate(-20deg)}
+  .bow::after{right:3px; transform:rotate(20deg)}
+  .bow span{
+    position:absolute;
+    left:50%; top:15px;
+    width:16px;height:16px;
+    background:linear-gradient(180deg, #fff7cc, #ffd166);
+    border-radius:50%;
+    transform:translateX(-50%);
+    box-shadow:0 0 12px rgba(255,209,102,.24);
+  }
+  .instructions{
+    color:#f3dfff;
+    font-size:1.05rem;
+    margin:0 0 14px;
+  }
+  .msg{
+    display:none;
+    margin:16px auto 0;
+    font-size:clamp(1.25rem,2.8vw,2rem);
+    font-weight:800;
+    color:#fff;
+    text-shadow:0 0 18px rgba(255,255,255,.15);
+  }
+  .btn{
+    display:none;
+    margin-top:18px;
+    appearance:none;
+    border:none;
+    border-radius:999px;
+    padding:14px 24px;
+    font-size:1rem;
+    font-weight:800;
+    cursor:pointer;
+    color:#220814;
+    background:linear-gradient(135deg, #fff5d8, #ffd166);
+    box-shadow:0 14px 30px rgba(255,209,102,.28);
+  }
+  .shake{animation:shake .6s ease-in-out 4}
+  @keyframes shake{
+    0%,100%{transform:translateX(0) rotate(0deg)}
+    20%{transform:translateX(-10px) rotate(-4deg)}
+    40%{transform:translateX(10px) rotate(4deg)}
+    60%{transform:translateX(-8px) rotate(-3deg)}
+    80%{transform:translateX(8px) rotate(3deg)}
+  }
+  .flash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(circle at center, rgba(255,209,102,.22), transparent 55%);
+    opacity:0;
+    transition:opacity .2s ease;
+  }
+  .flash.on{opacity:1}
+  .tiny{
+    margin-top:14px;
+    font-size:.92rem;
+    color:#f6eaff;
+    opacity:.8;
+  }
 </style>
 </head>
 <body>
-<h1>Stage 2</h1>
-<div id="box"></div>
-<div id="msg">😂 STILL WRONG!!<br>Okay okay... next one is real (maybe)</div>
-<button onclick="location.href='final.html'">FINAL STAGE →</button>
+  <div id="ambient">
+    <div class="gridGlow"></div>
+  </div>
 
-<script>
-let drum=new Audio('https://www.soundjay.com/misc/sounds/drum-roll-1.mp3');
+  <div class="header">
+    <h1>Gender reveal page</h1>
+    <p class="subtitle">Click the box to continue. The page looks convincing, but it is still part of the setup.</p>
+  </div>
 
-document.getElementById('box').onclick=function(){
- drum.play();
- this.style.transform='scale(1.4) rotate(20deg)';
- setTimeout(()=>{
-  document.getElementById('msg').style.display='block';
-  document.querySelector('button').style.display='inline-block';
- },2500);
-}
-</script>
+  <div class="stage">
+    <div class="panel">
+      <p class="instructions">Tap the gift box and wait for the result.</p>
+
+      <div class="giftWrap" id="gift">
+        <div class="lid"></div>
+        <div class="box"></div>
+        <div class="ribbon-v"></div>
+        <div class="ribbon-h"></div>
+        <div class="bow"><span></span></div>
+        <div class="flash" id="flash"></div>
+      </div>
+
+      <div id="msg" class="msg">This was a dummy page.<br/>The real reveal is next.</div>
+      <button id="nextBtn" class="btn" onclick="location.href='final.html'">FINAL STAGE →</button>
+      <div class="tiny">Stage 2: suspense, misdirection, and a little drama.</div>
+    </div>
+  </div>
+
+  <script>
+    let audioCtx;
+    let started = false;
+    let rollTimer = null;
+    const gift = document.getElementById('gift');
+    const msg = document.getElementById('msg');
+    const nextBtn = document.getElementById('nextBtn');
+    const flash = document.getElementById('flash');
+    const ambient = document.getElementById('ambient');
+
+    function initAudio(){
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function note(freq, start, dur, type = 'sawtooth', gain = 0.03){
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + start);
+      g.gain.setValueAtTime(0.0001, audioCtx.currentTime + start);
+      g.gain.exponentialRampToValueAtTime(gain, audioCtx.currentTime + start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + start + dur);
+      osc.connect(g).connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + start);
+      osc.stop(audioCtx.currentTime + start + dur + 0.03);
+    }
+
+    function startSuspense(){
+      stopSuspense();
+      let step = 0;
+      rollTimer = setInterval(() => {
+        const base = 110 + (step % 5) * 18;
+        note(base, 0, 0.08, 'sawtooth', 0.02);
+        if (step % 3 === 0) note(55, 0, 0.14, 'square', 0.018);
+        if (step % 8 === 7) note(220, 0, 0.10, 'triangle', 0.016);
+        step++;
+      }, 160);
+    }
+
+    function stopSuspense(){
+      if (rollTimer) clearInterval(rollTimer);
+      rollTimer = null;
+    }
+
+    function createQuestions(){
+      for(let i = 0; i < 26; i++){
+        const q = document.createElement('div');
+        q.className = 'question';
+        q.textContent = ['?', '!?', '??', '...'][i % 4];
+        q.style.left = Math.random() * 100 + 'vw';
+        q.style.animationDuration = (5 + Math.random() * 6) + 's';
+        q.style.animationDelay = (-Math.random() * 8) + 's';
+        q.style.fontSize = (1.6 + Math.random() * 3) + 'rem';
+        ambient.appendChild(q);
+      }
+    }
+
+    function triggerFakeReveal(){
+      gift.classList.add('shake');
+      flash.classList.add('on');
+      initAudio();
+      startSuspense();
+      for(let i=0;i<3;i++) note(392 + i*60, i*0.18, 0.12, 'triangle', 0.03);
+
+      setTimeout(() => {
+        flash.classList.remove('on');
+        msg.style.display = 'block';
+        nextBtn.style.display = 'inline-block';
+        note(233.08, 0, 0.16, 'square', 0.02);
+        note(174.61, 0.14, 0.18, 'square', 0.02);
+      }, 2200);
+    }
+
+    gift.addEventListener('click', () => {
+      if (started) return;
+      started = true;
+      initAudio();
+      triggerFakeReveal();
+    });
+
+    createQuestions();
+  </script>
 </body>
 </html>
-
