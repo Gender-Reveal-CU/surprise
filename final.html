@@ -334,5 +334,14 @@
     startReveal();
     draw();
   </script>
+
+  <script>
+  if (sessionStorage.getItem('revealReady') === '1') {
+    startReveal();
+  } else {
+    startReveal();
+  }
+</script>
+
 </body>
 </html>
