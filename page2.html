@@ -225,6 +225,26 @@
       </div>
 
       <div id="msg" class="msg">This was a dummy page.<br/>The real reveal is next.</div>
+      <script>
+  // ...
+  function triggerFakeReveal(){
+    gift.classList.add('shake');
+    flash.classList.add('on');
+    initAudio();
+    startSuspense();
+    for(let i=0;i<3;i++) note(392 + i*60, i*0.18, 0.12, 'triangle', 0.03);
+
+    setTimeout(() => {
+      flash.classList.remove('on');
+      msg.style.display = 'block';
+      nextBtn.style.display = 'inline-block';
+      sessionStorage.setItem('revealReady', '1');
+      note(233.08, 0, 0.16, 'square', 0.02);
+      note(174.61, 0.14, 0.18, 'square', 0.02);
+    }, 2200);
+  }
+  // ...
+</script>
       <button id="nextBtn" class="btn" onclick="location.href='final.html'">FINAL STAGE →</button>
       <div class="tiny">Stage 2: suspense, misdirection, and a little drama.</div>
     </div>
